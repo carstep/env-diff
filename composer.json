@@ -1,5 +1,5 @@
 {
-    "name": "tekill/env-diff",
+    "name": "carstep/env-diff",
     "description": "Check the difference between env files and actualize each other",
     "type": "library",
     "license": "MIT",
