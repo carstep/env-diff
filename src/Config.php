@@ -16,18 +16,23 @@ class Config
     /** @var bool */
     private $keepOutdatedEnv;
 
+    /** @var bool */
+    private $supportLocalEnv;
+
     /**
      * Config constructor.
      *
      * @param string $dist
      * @param string $target
-     * @param bool   $keepOutdatedEnv
+     * @param bool $keepOutdatedEnv
+     * @param bool $supportLocalEnv
      */
-    public function __construct($dist = self::DEFAULT_DIST, $target = self::DEFAULT_TARGET, $keepOutdatedEnv = true)
+    public function __construct($dist = self::DEFAULT_DIST, $target = self::DEFAULT_TARGET, $keepOutdatedEnv = true, $supportLocalEnv = false)
     {
         $this->dist            = $dist;
         $this->target          = $target;
         $this->keepOutdatedEnv = $keepOutdatedEnv;
+        $this->supportLocalEnv = $supportLocalEnv;
     }
 
     /**
@@ -47,13 +52,17 @@ class Config
             $config['keep-outdated'] = true;
         }
 
-        return new static($config['dist'], $config['target'], (bool) $config['keep-outdated']);
+        if (!isset($config['support-local-env'])) {
+            $config['support-local-env'] = false;
+        }
+
+        return new static($config['dist'], $config['target'], (bool) $config['keep-outdated'], (bool) $config['support-local-env']);
     }
 
     /**
      * @return string
      */
-    public function getDist()
+    public function getDist(): string
     {
         return $this->dist;
     }
@@ -61,7 +70,7 @@ class Config
     /**
      * @return string
      */
-    public function getTarget()
+    public function getTarget(): string
     {
         return $this->target;
     }
@@ -69,8 +78,17 @@ class Config
     /**
      * @return boolean
      */
-    public function isKeepOutdatedEnv()
+    public function isKeepOutdatedEnv(): bool
     {
         return $this->keepOutdatedEnv;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isSupportLocalEnv(): bool
+    {
+        return $this->supportLocalEnv;
+    }
+
 }

@@ -8,6 +8,8 @@ use LF\EnvDiff\Env\Parser;
 
 class Env
 {
+    const LOCAL = '.env.local';
+
     /**
      * @param array $envArray
      *

@@ -40,6 +40,9 @@ class Processor
         try {
             $distEnv   = Env::parse($dist);
             $actualEnv = $exists ? Env::parse($target) : [];
+            if ($config->isSupportLocalEnv() && is_file(Env::LOCAL)) {
+                $actualEnv = $this->processLocalEnvSettings($actualEnv);
+            }
         } catch (InvalidArgumentException $exception) {
             $this->io->write(sprintf('<error>%s, abort</error>', $exception->getMessage()));
 
@@ -75,7 +78,9 @@ class Processor
         try {
             $distEnv   = Env::parse($dist);
             $actualEnv = Env::parse($target);
-            $actualEnv = $this->processLocalEnvSetting($config, $actualEnv);
+            if ($config->isSupportLocalEnv()) {
+                $actualEnv = $this->processLocalEnvSettings( $actualEnv );
+            }
         } catch (InvalidArgumentException $exception) {
             $this->io->write(sprintf('<error>%s</error>', $exception->getMessage()));
 
@@ -155,12 +160,12 @@ class Processor
         return $actualEnv;
     }
 
-    private function processLocalEnvSetting(Config $config, array $actualEnv): array
+    private function processLocalEnvSettings(array $actualEnv): array
     {
-        $target = $config->getTarget();
-        $targetLocal = $target . '.local';
+        $targetLocal = Env::LOCAL;
         try {
             $targetLocalEnv = Env::parse($targetLocal);
+            return array_merge($actualEnv, $targetLocalEnv);
         } catch (InvalidArgumentException $e) {
             return $actualEnv;
         }
