@@ -75,6 +75,7 @@ class Processor
         try {
             $distEnv   = Env::parse($dist);
             $actualEnv = Env::parse($target);
+            $actualEnv = $this->processLocalEnvSetting($config, $actualEnv);
         } catch (InvalidArgumentException $exception) {
             $this->io->write(sprintf('<error>%s</error>', $exception->getMessage()));
 
@@ -152,5 +153,16 @@ class Processor
         }
 
         return $actualEnv;
+    }
+
+    private function processLocalEnvSetting(Config $config, array $actualEnv): array
+    {
+        $target = $config->getTarget();
+        $targetLocal = $target . '.local';
+        try {
+            $targetLocalEnv = Env::parse($targetLocal);
+        } catch (InvalidArgumentException $e) {
+            return $actualEnv;
+        }
     }
 }
